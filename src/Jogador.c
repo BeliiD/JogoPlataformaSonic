@@ -14,6 +14,7 @@
 #include "Animacao.h"
 #include "Inimigo.h"
 #include "InimigoMotobug.h"
+#include "InimigoBuzzBomber.h"
 #include "Item.h"
 #include "ItemAnel.h"
 #include "Macros.h"
@@ -670,6 +671,82 @@ static void resolverColisaoJogadorInimigosMapa( Jogador *j, Mapa *mapa ) {
                 }
 
                 return; // um inimigo de cada vez!
+
+            }
+
+        } else if ( inimigo->tipo == TIPO_INIMIGO_BUZZ_BOMBER ) {
+
+            InimigoBuzzBomber *buzz = (InimigoBuzzBomber*) inimigo->objeto;
+
+            if ( !buzz->ativo || buzz->estado == ESTADO_INIMIGO_BUZZ_BOMBER_MORRENDO ) {
+                el = el->proximo;
+                continue;
+            }
+
+            qaInimigo = getQuadroAnimacaoAtualInimigoBuzzBomber( buzz );
+            olhandoParaDireita = &buzz->olhandoParaDireita;
+            ret = &buzz->ret;
+
+            float deslocamentoX = *olhandoParaDireita
+                ? ret->width - qaInimigo->retColisao.x - qaInimigo->retColisao.width
+                : qaInimigo->retColisao.x;
+            float deslocamentoY = qaInimigo->retColisao.y;
+
+            Rectangle retColInimigoCalculado = {
+                ret->x + deslocamentoX,
+                ret->y + deslocamentoY,
+                qaInimigo->retColisao.width,
+                qaInimigo->retColisao.height
+            };
+
+            if ( CheckCollisionRecs( retColCalculado, retColInimigoCalculado ) ) {
+
+                if ( j->estado >= ESTADO_JOGADOR_PULANDO && j->estado <= ESTADO_JOGADOR_PULANDO_CORRENDO ) {
+                    j->vel.y = j->velPulo;
+                    buzz->estado = ESTADO_INIMIGO_BUZZ_BOMBER_MORRENDO;
+                    buzz->vel.x = 0;
+                    j->score += 100;
+                    PlaySound( rm.somHitInimigo );
+                } else if ( !j->invulneravel ) {
+                    if ( j->quantidadeAneis > 0 ) {
+                        j->quantidadeAneis = 0;
+                        PlaySound( rm.somHitComAnel );
+                    } else {
+                        j->quantidadeVidas--;
+                        PlaySound( rm.somMorte );
+                    }
+                    j->invulneravel = true;
+                }
+
+                return; // um inimigo de cada vez!
+
+            }
+
+        } else if ( inimigo->tipo == TIPO_INIMIGO_BUZZ_BOMBER_PROJETIL ) {
+
+            InimigoBuzzBomberProjetil *proj = (InimigoBuzzBomberProjetil*) inimigo->objeto;
+
+            if ( !proj->ativo ) {
+                el = el->proximo;
+                continue;
+            }
+
+            if ( CheckCollisionRecs( retColCalculado, proj->ret ) ) {
+                
+                proj->ativo = false; // Desativa o projétil ao atingir o jogador
+
+                if ( !j->invulneravel ) {
+                    if ( j->quantidadeAneis > 0 ) {
+                        j->quantidadeAneis = 0;
+                        PlaySound( rm.somHitComAnel );
+                    } else {
+                        j->quantidadeVidas--;
+                        PlaySound( rm.somMorte );
+                    }
+                    j->invulneravel = true;
+                }
+
+                return;
 
             }
 

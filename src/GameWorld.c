@@ -86,7 +86,7 @@ static void desenharNumeroHUD( int valor, int xRight, int y ) {
 
     if ( valor == 0 ) {
 
-        Rectangle src = { 73 + 0 * 16, 433, 7, 10 };
+        Rectangle src = { 73 + 0 * 16, 433, 7, 12 };
         desenharHudRec( src, xRight - 16, y, WHITE );
         return;
 
@@ -98,7 +98,7 @@ static void desenharNumeroHUD( int valor, int xRight, int y ) {
 
         int dig = temp % 10;
         curX -= 16;
-        Rectangle src = { 73 + dig * 16, 433, 8, 11 };
+        Rectangle src = { 73 + dig * 16, 433, 8, 12 };
         desenharHudRec( src, curX, y, WHITE );
         temp /= 10;
 
@@ -110,39 +110,24 @@ static void desenharTempoHUD( float tempo, int xRight, int y ) {
 
     int minutos = (int)(tempo / 60);
     int segundos = (int)(tempo) % 60;
-    int centisegundos = (int)((tempo - (int)tempo) * 100);
-    if ( centisegundos > 99 ) centisegundos = 99;
     if ( minutos > 9 ) minutos = 9;
     
     int curX = xRight;
     
-    // Centiésimos
-    int digit1 = centisegundos % 10;
-    int digit2 = centisegundos / 10;
-    
-    curX -= 16;
-    Rectangle srcDec = { 73 + digit1 * 16, 433, 7, 10 };
-    desenharHudRec( srcDec, curX, y, WHITE );
-    
-    curX -= 16;
-    Rectangle srcCent = { 73 + digit2 * 16, 433, 7, 10 };
-    desenharHudRec( srcCent, curX, y, WHITE );
-    
     // Dois pontos
     curX -= 10;
     Rectangle srcColon = { 90, 226, 5, 9 };
-    desenharHudRec( srcColon, curX, y + 2, WHITE );
     
     // Segundos
-    digit1 = segundos % 10;
-    digit2 = segundos / 10;
+    int digit1 = segundos % 10;
+    int digit2 = segundos / 10;
     
     curX -= 16;
-    Rectangle srcSec1 = { 73 + digit1 * 16, 433, 7, 10 };
+    Rectangle srcSec1 = { 73 + digit1 * 16, 433, 7, 12 };
     desenharHudRec( srcSec1, curX, y, WHITE );
     
     curX -= 16;
-    Rectangle srcSec2 = { 73 + digit2 * 16, 433, 7, 10 };
+    Rectangle srcSec2 = { 73 + digit2 * 16, 433, 7, 12 };
     desenharHudRec( srcSec2, curX, y, WHITE );
     
     // Dois pontos
@@ -151,7 +136,7 @@ static void desenharTempoHUD( float tempo, int xRight, int y ) {
     
     // Minutos
     curX -= 16;
-    Rectangle srcMin = { 73 + minutos * 16, 433, 7, 10 };
+    Rectangle srcMin = { 73 + minutos * 16, 433, 7, 12 };
     desenharHudRec( srcMin, curX, y, WHITE );
 }
 
@@ -172,14 +157,14 @@ static void desenharVidasHUD( int vidas, int x, int y ) {
         
         int count = -vidas;
         if ( count > 9 ) count = 9; 
-        Rectangle srcNum = { 73 + count * 16, 433, 7, 10 };
-        desenharHudRec( srcNum, x + 68, y + 18, WHITE );
+        Rectangle srcNum = { 73 + count * 16, 433, 7, 12 };
+        desenharHudRec( srcNum, x + 75, y + 18, WHITE );
 
     } else {
 
         int count = (vidas > 9) ? 9 : vidas;
-        Rectangle srcNum = { 73 + count * 16, 433, 7, 10 };
-        desenharHudRec( srcNum, x + 68, y + 18, WHITE );
+        Rectangle srcNum = { 73 + count * 16, 433, 7, 12 };
+        desenharHudRec( srcNum, x + 75, y + 18, WHITE );
 
     }
 
@@ -210,9 +195,9 @@ void drawGameWorld( GameWorld *gw ) {
     desenharHudRec( srcRings, 16, 64, WHITE );  //RING
 
     // Desenhar Valores do HUD
-    desenharNumeroHUD( gw->jogador->score, 240, 16 );
-    desenharTempoHUD( gw->tempoDeJogo, 240, 40 );
-    desenharNumeroHUD( gw->jogador->quantidadeAneis, 240, 64 );
+    desenharNumeroHUD( gw->jogador->score, 165, 16 );
+    desenharTempoHUD( gw->tempoDeJogo, 160, 40 );
+    desenharNumeroHUD( gw->jogador->quantidadeAneis, 150, 64 );
 
     // Desenhar vidasJ
     desenharVidasHUD( gw->jogador->quantidadeVidas, 16, GetScreenHeight() - 48 );

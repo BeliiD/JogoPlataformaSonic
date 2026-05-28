@@ -12,6 +12,7 @@
 
 #include "Inimigo.h"
 #include "InimigoMotobug.h"
+#include "InimigoBuzzBomber.h"
 #include "Tipos.h"
 
 /**
@@ -36,6 +37,12 @@ void destruirInimigo( Inimigo *inimigo ) {
             case TIPO_INIMIGO_MOTOBUG:
                 destruirInimigoMotobug( (InimigoMotobug*) inimigo->objeto );
                 break;
+            case TIPO_INIMIGO_BUZZ_BOMBER:
+                destruirInimigoBuzzBomber( (InimigoBuzzBomber*) inimigo->objeto );
+                break;
+            case TIPO_INIMIGO_BUZZ_BOMBER_PROJETIL:
+                destruirInimigoBuzzBomberProjetil( (InimigoBuzzBomberProjetil*) inimigo->objeto );
+                break;
             default:
                 break;
         }
@@ -52,6 +59,12 @@ void atualizarInimigo( Inimigo *inimigo, GameWorld *gw, float delta ) {
         case TIPO_INIMIGO_MOTOBUG:
             atualizarInimigoMotobug( (InimigoMotobug*) inimigo->objeto, gw, delta );
             break;
+        case TIPO_INIMIGO_BUZZ_BOMBER:
+            atualizarInimigoBuzzBomber( (InimigoBuzzBomber*) inimigo->objeto, gw, delta );
+            break;
+        case TIPO_INIMIGO_BUZZ_BOMBER_PROJETIL:
+            atualizarInimigoBuzzBomberProjetil( (InimigoBuzzBomberProjetil*) inimigo->objeto, gw, delta );
+            break;
         default:
             return;
     }
@@ -66,6 +79,12 @@ void desenharInimigo( Inimigo *inimigo ) {
     switch ( inimigo->tipo ) {
         case TIPO_INIMIGO_MOTOBUG:
             desenharInimigoMotobug( (InimigoMotobug*) inimigo->objeto );
+            break;
+        case TIPO_INIMIGO_BUZZ_BOMBER:
+            desenharInimigoBuzzBomber( (InimigoBuzzBomber*) inimigo->objeto );
+            break;
+        case TIPO_INIMIGO_BUZZ_BOMBER_PROJETIL:
+            desenharInimigoBuzzBomberProjetil( (InimigoBuzzBomberProjetil*) inimigo->objeto );
             break;
         default:
             return;
@@ -92,6 +111,11 @@ void resolverColisaoInimigoObstaculosMapaX( Inimigo *inimigo, Mapa *mapa ) {
             qa = getQuadroAnimacaoAtualInimigoMotobug( motobug );
             olhandoParaDireita = &motobug->olhandoParaDireita;
             ret = &motobug->ret;
+        } else if ( inimigo->tipo == TIPO_INIMIGO_BUZZ_BOMBER ) {
+            InimigoBuzzBomber *buzz = (InimigoBuzzBomber*) inimigo->objeto;
+            qa = getQuadroAnimacaoAtualInimigoBuzzBomber( buzz );
+            olhandoParaDireita = &buzz->olhandoParaDireita;
+            ret = &buzz->ret;
         } else {
             el = el->proximo;
             continue;
@@ -149,6 +173,12 @@ void resolverColisaoInimigoObstaculosMapaY( Inimigo *inimigo, Mapa *mapa ) {
             olhandoParaDireita = &motobug->olhandoParaDireita;
             ret = &motobug->ret;
             vel = &motobug->vel;
+        } else if ( inimigo->tipo == TIPO_INIMIGO_BUZZ_BOMBER ) {
+            InimigoBuzzBomber *buzz = (InimigoBuzzBomber*) inimigo->objeto;
+            qa = getQuadroAnimacaoAtualInimigoBuzzBomber( buzz );
+            olhandoParaDireita = &buzz->olhandoParaDireita;
+            ret = &buzz->ret;
+            vel = &buzz->vel;
         } else {
             el = el->proximo;
             continue;

@@ -41,6 +41,19 @@ void loadResourcesResourceManager( void ) {
         1
     );
 
+    rm.texturaBadniksBase = carregarTexturaAlterandoCores( 
+        "resources/imagens/sprites/badniks-base.png",
+        (Color[]) {
+            { 13, 72, 7, 255 },
+            { 37, 102, 26, 255 },
+        },
+        (Color[]) {
+            BLANK,
+            BLANK,
+        },
+        2
+    );
+
     rm.texturaItens = carregarTexturaAlterandoCores( 
         "resources/imagens/itens/itens.png",
         (Color[]) {
@@ -68,6 +81,7 @@ void loadResourcesResourceManager( void ) {
     // bleeding de cor entre pixels adjacentes — efeito indesejável em pixel art.
     SetTextureFilter( rm.texturaJogador, TEXTURE_FILTER_POINT );
     SetTextureFilter( rm.texturaBadniks, TEXTURE_FILTER_POINT );
+    SetTextureFilter( rm.texturaBadniksBase, TEXTURE_FILTER_POINT );
     SetTextureFilter( rm.texturaItens, TEXTURE_FILTER_POINT );
     SetTextureFilter( rm.texturaTerreno, TEXTURE_FILTER_POINT );
     SetTextureFilter( rm.texturaFundo, TEXTURE_FILTER_POINT );
@@ -89,6 +103,7 @@ void unloadResourcesResourceManager( void ) {
 
     UnloadTexture( rm.texturaJogador );
     UnloadTexture( rm.texturaBadniks );
+    UnloadTexture( rm.texturaBadniksBase );
     UnloadTexture( rm.texturaItens );
     UnloadTexture( rm.texturaTerreno );
     UnloadTexture( rm.texturaFundo );

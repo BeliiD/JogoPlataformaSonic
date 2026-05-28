@@ -33,10 +33,21 @@ typedef enum EstadoInimigoMotobug {
 } EstadoInimigoMotobug;
 
 /**
+ * @brief Representa o estado do inimigo do tipo Buzz Bomber.
+ */
+typedef enum EstadoInimigoBuzzBomber {
+    ESTADO_INIMIGO_BUZZ_BOMBER_VOANDO,
+    ESTADO_INIMIGO_BUZZ_BOMBER_ATIRANDO,
+    ESTADO_INIMIGO_BUZZ_BOMBER_MORRENDO,
+} EstadoInimigoBuzzBomber;
+
+/**
  * @brief Representa o tipo de um inimigo.
  */
 typedef enum TipoInimigo {
     TIPO_INIMIGO_MOTOBUG,
+    TIPO_INIMIGO_BUZZ_BOMBER,
+    TIPO_INIMIGO_BUZZ_BOMBER_PROJETIL,
 } TipoInimigo;
 
 /**
@@ -161,6 +172,47 @@ typedef struct InimigoMotobug {
     Animacao animacaoMorrendo;
 
 } InimigoMotobug;
+
+/**
+ * @brief Representa um inimigo do tipo Buzz Bomber.
+ */
+typedef struct InimigoBuzzBomber {
+
+    Rectangle ret;
+    Vector2 vel;
+    Color cor;
+
+    float velVoo;
+
+    EstadoInimigoBuzzBomber estado;
+    bool ativo;
+    bool olhandoParaDireita;
+
+    Animacao *animacoes[3];
+    int quantidadeAnimacoes;
+
+    Animacao animacaoVoando;
+    Animacao animacaoAtirando;
+    Animacao animacaoMorrendo;
+
+    float cooldownTiro;
+    float tempoPreparacaoTiro;
+
+} InimigoBuzzBomber;
+
+/**
+ * @brief Representa o projétil (bomba) disparado pelo Buzz Bomber.
+ */
+typedef struct InimigoBuzzBomberProjetil {
+
+    Rectangle ret;
+    Vector2 vel;
+    Color cor;
+    bool ativo;
+    Rectangle fonte;
+    float vidaUtil;
+
+} InimigoBuzzBomberProjetil;
 
 /**
  * @brief Representa um inimigo.
