@@ -1,0 +1,18 @@
+M                                                                                        M                 M
+M                                                                                        M                 M
+M                                                                                        M                 M
+M                                                                                        M                 M
+M                                                                                        M                 M
+M                                                                                        M                 M
+M                                                                                        M                 M
+M                                               MMMMMMMMMMMMMM                           M                 M
+M                                                                       1                M                 M                
+M                     M   M   M                 aaaaa2  aaaaa2                      1                      M
+M                    a    a   a       1      a  MMMMMM  MMMMMM                                             M
+M                   a   a    a             a  M                       a   a   a            M          1    M
+M          0 aaaaaaa            0 aaaaa    M                          M   M   M  0202020  M             p  M                           
+MMMMMMMMMMMMMMMMMMMM  M   M   M  MMMMMMMMM                        MMM           MMMMMMMMMMMM           MMMMM
+MMMMMMMMMMMMMMMMMMMM  M   M   M  MMMMMMMMM                        MMM           MMMMMMMMMMMM           MMMMM
+MMMMMMMMMMMMMMMMMMMM  M   M   M  MMMMMMMMM                        MMM           MMMMMMMMMMMM02020202020MMMMM
+MMMMMMMMMMMMMMMMMMMM  M   M   M  MMMMMMMMM                        MMM           MMMMMMMMMMMMMMMMMMMMMMMMMMMM
+

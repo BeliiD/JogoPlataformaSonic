@@ -1,0 +1,16 @@
+M                                                               M
+M                                                               M
+M                                                               M
+M                   e                                           M
+M                  MMMM                                         M
+M                      M                                        M
+M                       M                                       M
+M                        M      1                               M
+M                           aaaaaa                              M
+M                          aMMMMMM                              M
+M                         aM                                    M
+M                        aM     1     M     1                   M
+M      s           0202 aM  aaaaaaaa  M               M  0   p  M
+FBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB  M  M  M   M  BBBBBBBBBBB
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA               AAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA                AAAAAAAAAAA
