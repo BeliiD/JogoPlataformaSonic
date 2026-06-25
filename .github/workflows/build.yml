@@ -1,0 +1,153 @@
+name: Build Inbonha The Hedgehog
+
+on:
+  push:
+    branches:
+      - main
+
+# Permissão necessária para o robô do GitHub Actions criar a Release
+permissions:
+  contents: write
+
+jobs:
+  # ==========================================
+  # JOB 1: BUILD LINUX (.AppImage)
+  # ==========================================
+  build-linux:
+    name: Build Linux AppImage
+    runs-on: ubuntu-latest
+
+    # Exporta o número da versão gerada para ser usado no Job de Release
+    outputs:
+      version: ${{ steps.calc_version.outputs.version }}
+
+    steps:
+      - name: Checkout do repositório
+        uses: actions/checkout@v4
+
+      - name: Calcular Versão Incremental
+        id: calc_version
+        run: |
+          VER=$((GITHUB_RUN_NUMBER + 5))
+          echo "VERSION=$VER" >> $GITHUB_ENV
+          echo "version=$VER" >> $GITHUB_OUTPUT
+
+      - name: Instalar dependências gráficas
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y gcc make libasound2-dev libx11-dev libxrandr-dev \
+                                  libxi-dev libgl1-mesa-dev libglu1-mesa-dev libxcursor-dev \
+                                  libxinerama-dev libwayland-dev libxkbcommon-dev git wget
+
+      - name: Compilar Raylib (Source)
+        run: |
+          git clone --depth 1 --branch 5.0 https://github.com/raysan5/raylib.git
+          cd raylib/src
+          make PLATFORM=PLATFORM_DESKTOP
+          sudo make install
+
+      - name: Compilar Projeto (Shell Script)
+        run: bash build.sh -compile
+
+      - name: Construir e Empacotar .AppImage
+        run: |
+          wget -nc https://github.com/AppImage/appimagetool/releases/download/continuous/appimagetool-x86_64.AppImage
+          chmod +x appimagetool-x86_64.AppImage
+
+          mkdir -p AppDir/usr/bin
+
+          cp Inbonha-The-Hedgehog AppDir/usr/bin/
+          if [ -d "resources" ]; then
+            cp -r resources AppDir/usr/bin/
+          fi
+
+          cat << 'EOF' > AppDir/AppRun
+          #!/bin/sh
+          HERE="$(dirname "$(readlink -f "${0}")")"
+          cd "$HERE/usr/bin"
+          exec ./Inbonha-The-Hedgehog "$@"
+          EOF
+          chmod +x AppDir/AppRun
+
+          cp resources/imagens/sprites/sonic.png AppDir/inbonha.png
+
+          cat << 'EOF' > AppDir/inbonha.desktop
+          [Desktop Entry]
+          Type=Application
+          Name=Inbonha The Hedgehog
+          Exec=Inbonha-The-Hedgehog
+          Icon=inbonha
+          Categories=Game;
+          EOF
+
+          ./appimagetool-x86_64.AppImage --appimage-extract-and-run AppDir Inbonha-The-Hedgehog-v${VERSION}-Linux.AppImage
+
+      - name: Upload Artefato Temporário
+        uses: actions/upload-artifact@v4
+        with:
+          name: linux-appimage
+          path: Inbonha-The-Hedgehog-v${{ env.VERSION }}-Linux.AppImage
+
+  # ==========================================
+  # JOB 2: BUILD WINDOWS (.exe)
+  # ==========================================
+  build-windows:
+    name: Build Windows Executable
+    runs-on: windows-latest
+    steps:
+      - name: Checkout do repositório
+        uses: actions/checkout@v4
+
+      - name: Calcular Versão Incremental
+        run: |
+          $ver = ${{ github.run_number }} + 5
+          echo "VERSION=$ver" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+
+      - name: Verificar se libraylib.a existe
+        run: |
+          if (-not (Test-Path "lib\libraylib.a")) {
+              Write-Error "O arquivo lib\libraylib.a não foi encontrado!"
+              exit 1
+          }
+
+      - name: Compilar Projeto (PowerShell)
+        run: .\build.ps1 -compile
+
+      - name: Preparar Pasta e Zipar
+        run: |
+          mkdir release_windows
+          Copy-Item -Path "Inbonha-The-Hedgehog.exe" -Destination "release_windows\"
+          if (Test-Path "resources") {
+              Copy-Item -Path "resources" -Destination "release_windows\resources" -Recurse
+          }
+          # Nós compactamos manualmente o ZIP no Windows para subir pronto para a Release
+          Compress-Archive -Path "release_windows\*" -DestinationPath "Inbonha-The-Hedgehog-v${env:VERSION}-Windows.zip"
+
+      - name: Upload Artefato Temporário
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-zip
+          path: Inbonha-The-Hedgehog-v${{ env.VERSION }}-Windows.zip
+
+  # ==========================================
+  # JOB 3: PUBLICAR RELEASE
+  # ==========================================
+  publish-release:
+    name: Publicar no GitHub Releases
+    needs: [build-linux, build-windows]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download dos Artefatos
+        uses: actions/download-artifact@v4
+        with:
+          path: dist
+
+      - name: Criar GitHub Release Automática
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ needs.build-linux.outputs.version }}
+          name: "Inbonha The Hedgehog v${{ needs.build-linux.outputs.version }}"
+          generate_release_notes: true
+          files: |
+            dist/linux-appimage/*.AppImage
+            dist/windows-zip/*.zip
